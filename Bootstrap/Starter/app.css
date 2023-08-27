@@ -4,7 +4,7 @@ body {
 }
 #mainNavbar {
   font-size: 1.5rem;
-  font-weight: 400;
+  font-weight: 300;
 }
 #mainNavbar .nav-link {
   color: white;
@@ -14,4 +14,18 @@ body {
 }
 #mainNavbar .navbar-brand {
   color: #ea1c2c;
+  font-size: 1.5rem;
+}
+#headingGroup span {
+  color: #ea1c2c;
+}
+#headingGroup h1 {
+  font-weight: 300;
+  font-size: 4rem;
+}
+@media (max-width: 1300px) {
+  #headingGroup h1 {
+    font-weight: 100;
+    font-size: 3rem;
+  }
 }
