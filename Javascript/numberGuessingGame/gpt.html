@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number Guessing Game</title>
+  </head>
+  <body>
+    <button id="startButton">Start Game</button>
+    <script>
+      document
+        .getElementById("startButton")
+        .addEventListener("click", startGame);
+
+      function startGame() {
+        let maxNumber = prompt("Enter the max number");
+        const randomNumber = Math.floor(Math.random() * maxNumber);
+        let guessNumber;
+
+        while (true) {
+          guessNumber = prompt("Guess the random number!");
+
+          if (guessNumber === null) {
+            // Handle if the user cancels the prompt
+            console.log("Game canceled");
+            break;
+          }
+
+          guessNumber = parseInt(guessNumber);
+
+          if (guessNumber === randomNumber) {
+            console.log("Congratulations! You guessed the correct number.");
+            break;
+          } else if (guessNumber > randomNumber) {
+            console.log("Too high. Try again.");
+          } else if (guessNumber < randomNumber) {
+            console.log("Too low. Try again.");
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

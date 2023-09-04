@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Number Guessing Game</title>
+  </head>
+  <body></body>
+  <script src="numberGuessingGame.js" defer></script>
+  <script>
+    let maxNumber = prompt("Enter the max number");
+    const randomNumber = Math.floor(Math.random() * maxNumber);
+
+    let guessNumber = prompt("Guess the random number!");
+    while (guessNumber !== randomNumber) {
+      if (guessNumber === randomNumber) break;
+      if (guessNumber > randomNumber) guessNumber = prompt("too high");
+      else if (guessNumber < randomNumber) guessNumber = prompt("too low");
+    }
+    console.log("congrats");
+  </script>
+</html>
