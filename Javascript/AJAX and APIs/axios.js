@@ -16,12 +16,25 @@ const getStarWars = async () => {
     console.log("error", e);
   }
 };
-getStarWars();
+// getStarWars();
 
 // using headers in axios
-const dadJoke = async () => {
-  const config = { headers: { Accept: "application/json" } };
-  const res = await axios.get("https://icanhazdadjoke.com", config);
-  console.log(res.data.joke);
+const jokes = document.querySelector("#jokes");
+const button = document.querySelector("button");
+const newJoke = async () => {
+  const joke = await dadJoke();
+  const newLI = document.createElement("li");
+  newLI.append(joke);
+  jokes.append(newLI);
 };
-dadJoke();
+const dadJoke = async () => {
+  try {
+    const config = { headers: { Accept: "application/json" } };
+    const res = await axios.get("https://icanhazdadjoke.com", config);
+    //   console.log(res.data.joke);
+    return res.data.joke;
+  } catch (e) {
+    return "An error occured";
+  }
+};
+button.addEventListener("click", newJoke);
