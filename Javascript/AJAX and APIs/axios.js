@@ -17,7 +17,3 @@ const getStarWars = async () => {
   }
 };
 getStarWars();
-
-const dadJoke = async () => {
-  const res = axios.get("https://icanhazdadjoke.com");
-};
