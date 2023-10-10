@@ -14,3 +14,5 @@ app.listen(8080, () => {
 });
 // we started a new server on port 8080 and it is listening for requests
 // port is basically an address on a computer we are using to process requests
+
+//TODO we have to restart the server everytime we make a change in the code
