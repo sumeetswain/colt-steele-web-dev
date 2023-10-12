@@ -5,6 +5,11 @@ const redditData = require("./data.json"); //you have to put./ first to indicate
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "/views"));
 
+app.use(express.static(path.join(__dirname, "public")));
+// we can do express.static('public') but if we execute the file from some other folder it wont find the public folder and throw error
+app.get("/", (req, res) => {
+  res.render("home");
+});
 app.get("/r/:subreddit", (req, res) => {
   const { subreddit } = req.params;
   const data = redditData[subreddit];
@@ -15,9 +20,14 @@ app.get("/r/:subreddit", (req, res) => {
     res.render("notfound", { subreddit });
   }
 });
+app.get("/random", (req, res) => {
+  const randomNumber = Math.floor(Math.random() * 100) + 1;
+  // we can do the math in the ejs file itself but it is preferred to do it in here
+  res.render("random", { randomNumber }); // sending a variable to ejs file
+});
 app.get("*", (req, res) => {
   res.send("I dont know that path");
 });
-app.listen(3000, () => {
-  console.log("Listening on port 3000");
+app.listen(8080, () => {
+  console.log("Listening on port 8080");
 });
