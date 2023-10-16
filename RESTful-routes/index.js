@@ -9,38 +9,32 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 const comments = [
-  {
-    username: "Tom",
-    comment: "LOL",
-  },
-  {
-    username: "Harry",
-    comment: "Trash",
-  },
-  {
-    username: "Doomslayer58",
-    comment: "Epic",
-  },
-  {
-    username: "barbieloverxoxo",
-    comment: "Cutee",
-  },
+  { id: 1, username: "Tom", comment: "LOL" },
+  { id: 2, username: "Harry", comment: "Trash" },
+  { id: 3, username: "Doomslayer58", comment: "Epic" },
+  { id: 4, username: "barbieloverxoxo", comment: "Cutee" },
 ];
 app.get("/comments", (req, res) => {
-  res.render("comments/index", { comments });
+  res.render("comments/index", { comments }); // to display all the comments(array)
 });
 
 app.get("/comments/new", (req, res) => {
-  res.render("comments/new");
+  res.render("comments/new"); // form to create a new comment
 });
 
+app.post("/comments", (req, res) => {
+  const { username, comment } = req.body; //destructuring from req.body
+  comments.push({ username, comment }); //pushing into the comments array
+  // res.send("working");
+  res.redirect("/comments"); // redirecting to the main page of comments after adding new comment
+});
+app.get("/comments/:id", (req, res) => {
+  const { id } = req.params;
+  const comment = comments.find((c) => c.id === parseInt(id));
+  res.render("comments/show", { comment });
+});
 app.get("/puppies", (req, res) => {
   res.send("GET /puppies response");
-});
-app.post("/comments", (req, res) => {
-  const { username, comment } = req.body;
-  comments.push({ username, comment });
-  res.send("working");
 });
 app.post("/puppies", (req, res) => {
   const { breed, number } = req.body; // destructuring the request body after parsing
