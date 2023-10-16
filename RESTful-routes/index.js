@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const { v4: uuid } = require("uuid"); // package to create unique ids
 app.use(express.urlencoded({ extended: true }));
 //we have to tell express to parse the data being sent to it and here we are telling it to parse the form data
 // by default the data is in text form
@@ -9,10 +10,11 @@ app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
 const comments = [
-  { id: 1, username: "Tom", comment: "LOL" },
-  { id: 2, username: "Harry", comment: "Trash" },
-  { id: 3, username: "Doomslayer58", comment: "Epic" },
-  { id: 4, username: "barbieloverxoxo", comment: "Cutee" },
+  // creating unique ids for all the comments
+  { id: uuid(), username: "Tom", comment: "LOL" },
+  { id: uuid(), username: "Harry", comment: "Trash" },
+  { id: uuid(), username: "Doomslayer58", comment: "Epic" },
+  { id: uuid(), username: "barbieloverxoxo", comment: "Cutee" },
 ];
 app.get("/comments", (req, res) => {
   res.render("comments/index", { comments }); // to display all the comments(array)
@@ -24,13 +26,13 @@ app.get("/comments/new", (req, res) => {
 
 app.post("/comments", (req, res) => {
   const { username, comment } = req.body; //destructuring from req.body
-  comments.push({ username, comment }); //pushing into the comments array
+  comments.push({ username, comment, id }); //pushing into the comments array
   // res.send("working");
   res.redirect("/comments"); // redirecting to the main page of comments after adding new comment
 });
 app.get("/comments/:id", (req, res) => {
   const { id } = req.params;
-  const comment = comments.find((c) => c.id === parseInt(id));
+  const comment = comments.find((c) => c.id === id);
   res.render("comments/show", { comment });
 });
 app.get("/puppies", (req, res) => {
