@@ -11,7 +11,7 @@ app.use(methodOverride("_method")); // to send patch and delete requests from fo
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-const comments = [
+let comments = [
   // creating unique ids for all the comments
   { id: uuid(), username: "Tom", comment: "LOL" },
   { id: uuid(), username: "Harry", comment: "Trash" },
@@ -50,6 +50,11 @@ app.patch("/comments/:id", (req, res) => {
   const foundComment = comments.find((c) => c.id === id);
   foundComment.comment = newCommentText; // redeclaring the comment text
   res.redirect("/comments"); //redirecting to home page
+});
+app.delete("/comments/:id", (req, res) => {
+  const { id } = req.params;
+  comments = comments.filter((c) => c.id !== id);
+  res.redirect("/comments");
 });
 app.get("/puppies", (req, res) => {
   res.send("GET /puppies response");
