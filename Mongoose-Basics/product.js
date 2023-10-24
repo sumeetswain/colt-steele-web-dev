@@ -46,25 +46,62 @@ const productSchema = new mongoose.Schema({
     // this makes sure that the size would be  either S M or L and anything else will be returned as an error
   },
 });
+// * Creating a instance method for a model
+productSchema.methods.greet = function () {
+  console.log(`Greetings from ${this.name}`);
+};
+// this function should be declared before creating the product
+
+productSchema.methods.toggleOnSale = function () {
+  this.onSale = !this.onSale;
+  return this.save();
+  // saving is an asynchronous activity so we return it as a promise
+};
+
+// to add a category to a product
+productSchema.methods.addCategory = function (newCat) {
+  this.categories.push(newCat);
+  return this.save();
+};
+
+// to update values in multiple products
+productSchema.statics.flashSale = function () {
+  return this.updateMany({}, { onSale: true, price: 0 });
+  // the 1st pair of curly braces is to select all the items in the collection
+};
 
 const Product = mongoose.model("Product", productSchema);
+const findProduct = async () => {
+  const foundProduct = await Product.findOne({ name: "T-shirt" });
+  foundProduct.greet();
+  console.log(foundProduct);
 
-const bike = new Product({
-  name: "T-shirt",
-  price: 2000,
-  color: "red", // sending info that is not mentioned in the model will be ignored while saving in the collection
-  size: "L",
+  await foundProduct.toggleOnSale();
+  // due to saving being async we have to wait for this function to return something
+
+  await foundProduct.addCategory("Clothing");
+  console.log(foundProduct);
+};
+Product.flashSale().then((res) => {
+  console.log(res);
 });
-bike
-  .save()
-  .then((data) => {
-    console.log("Saved");
-    console.log(data);
-  })
-  .catch((err) => {
-    console.log("Error");
-    console.log(err);
-  });
+// const bike = new Product({
+//   name: "T-shirt",
+//   price: 2000,
+//   color: "red", // sending info that is not mentioned in the model will be ignored while saving in the collection
+//   size: "L",
+// });
+// bike
+//   .save()
+//   .then((data) => {
+//     console.log("Saved");
+//     console.log(data);
+//   })
+//   .catch((err) => {
+//     console.log("Error");
+//     console.log(err);
+//   });
+// bike.greet();
 
 // Product.findOneAndUpdate(
 //   { name: "Mountain Bike" },
