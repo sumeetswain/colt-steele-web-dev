@@ -9,19 +9,19 @@ mongoose
     console.log("Mongo Error", err);
   });
 // creating a new product
-const s = new Product({
-  name: "Sunflower Seeds",
-  price: 30,
-  category: "vegetable",
-});
+// const s = new Product({
+//   name: "Sunflower Seeds",
+//   price: 30,
+//   category: "vegetable",
+// });
 //saving the product in the db
-s.save()
-  .then((s) => {
-    console.log(s);
-  })
-  .catch((err) => {
-    console.log("error", err);
-  });
+// s.save()
+//   .then((s) => {
+//     console.log(s);
+//   })
+//   .catch((err) => {
+//     console.log("error", err);
+//   });
 
 //creating an array to insert in the db using insertMany
 const seedProducts = [
