@@ -41,3 +41,18 @@ const Movie = mongoose.model("Movie", movieSchema); // saving it to a variable c
 // });
 
 // * Updating using mongoose
+// In Shell
+
+// To update one
+// Movie.updateOne({title:'Golmaal'},{year:2006}).then(m=>console.log(m))
+// here we using title to look for the object we want to update and then we update the year to 2006 and log the message
+
+// To update many
+// Movie.updateMany({title:{$in:['Amadeus','Stand By Me']}},{score:10}).then(m=>{console.log(m)})
+
+// To find one and update
+// Movie.findOneAndUpdate({title:'The Iron Giant'},{score:7.0}).then(m=> console.log(m))
+// this code will return the old version of the object we are updating
+
+// To find one and update(Returns new value)
+// Movie.findOneAndUpdate({title:'The Iron Giant'},{score:7.8},{new:true}).then(m=> console.log(m))
