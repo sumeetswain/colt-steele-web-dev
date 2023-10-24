@@ -40,8 +40,7 @@ const Movie = mongoose.model("Movie", movieSchema); // saving it to a variable c
 //   console.log(data);
 // });
 
-// * Updating using mongoose
-// In Shell
+// * Updating using mongoose(In Shell)
 
 // To update one
 // Movie.updateOne({title:'Golmaal'},{year:2006}).then(m=>console.log(m))
@@ -52,7 +51,18 @@ const Movie = mongoose.model("Movie", movieSchema); // saving it to a variable c
 
 // To find one and update
 // Movie.findOneAndUpdate({title:'The Iron Giant'},{score:7.0}).then(m=> console.log(m))
-// this code will return the old version of the object we are updating
+// this will return the old version of the object we are updating
 
 // To find one and update(Returns new value)
 // Movie.findOneAndUpdate({title:'The Iron Giant'},{score:7.8},{new:true}).then(m=> console.log(m))
+
+// * Deleting using mongoose(In Shell)
+// to delete the first value that matches
+// Movie.deleteOne({title:'Amelie'}).then(msg => console.log(msg))
+
+// to delete multiple values
+//  Movie.deleteMany({year: {$gte:1999}}).then(m =>{console.log(m)})
+
+// to find one and delete
+//  Movie.findOneAndDelete({title:'Alien'}).then(m=> console.log(m))
+// this will return the value that was deleted
