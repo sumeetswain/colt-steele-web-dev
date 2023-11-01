@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const methodOverride = require("method-override");
 const Product = require("./models/product");
 const AppError = require("./AppError");
+const { wrap } = require("module");
 mongoose
   .connect("mongodb://127.0.0.1:27017/farmStand")
   .then(() => {
@@ -20,10 +21,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 const categories = ["fruit", "vegetable", "dairy"];
+function wrapAsync(fn) {
+  //wrapAsync takes a function
+  return function (req, res, next) {
+    // it returns a function
+    fn(req, res, next).catch((e) => next(e));
+    // when the function is returned, we append a catch block at the end of the function to catch any errors
+  };
+}
 
 //* Index Page
-app.get("/products", async (req, res, next) => {
-  try {
+app.get(
+  "/products",
+  wrapAsync(async (req, res, next) => {
     const { category } = req.query;
     if (category) {
       const products = await Product.find({ category });
@@ -32,10 +42,8 @@ app.get("/products", async (req, res, next) => {
       const products = await Product.find({});
       res.render("./products/index", { products, category: "All" });
     }
-  } catch (e) {
-    next(e);
-  }
-});
+  })
+);
 
 //* Home Page
 app.get("/", (req, res) => {
@@ -49,21 +57,22 @@ app.get("/products/new", (req, res) => {
 // new should be before /:id because it can lead to express thinking new is an id and try to get the id from mongo which does not exist leading to crashing the server
 
 //* Form submit to /products
-app.post("/products", async (req, res, next) => {
-  try {
+app.post(
+  "/products",
+  wrapAsync(async (req, res, next) => {
     const newProduct = new Product(req.body);
     await newProduct.save();
     console.log(newProduct);
     res.redirect("/products");
-  } catch (e) {
-    next(e);
-  }
-  // if the user attempts to add a product without the name or the price which is required in our db then it will be sent to the error handling middleware which displays the error
-});
+
+    // if the user attempts to add a product without the name or the price which is required in our db then it will be sent to the error handling middleware which displays the error
+  })
+);
 
 //* Details Page
-app.get("/products/:id", async (req, res, next) => {
-  try {
+app.get(
+  "/products/:id",
+  wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const product = await Product.findById(id);
     if (!product) {
@@ -71,25 +80,23 @@ app.get("/products/:id", async (req, res, next) => {
       // if there is no product with the id in URL then we will send the message and status code to the next error handler
     }
     res.render("products/show", { product });
-  } catch (e) {
-    next(e);
-  }
-});
+  })
+);
 
 //* Update Page
-app.get("/products/:id/edit", async (req, res) => {
-  try {
+app.get(
+  "/products/:id/edit",
+  wrapAsync(async (req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
     res.render("products/edit", { product, categories });
-  } catch (e) {
-    next(e);
-  }
-});
+  })
+);
 
 //*Edit form Submission
-app.put("/products/:id", async (req, res, next) => {
-  try {
+app.put(
+  "/products/:id",
+  wrapAsync(async (req, res, next) => {
     const { id } = req.params;
     const product = await Product.findByIdAndUpdate(id, req.body, {
       runValidators: true,
@@ -98,18 +105,27 @@ app.put("/products/:id", async (req, res, next) => {
     // req.body has all the info that was changed using the form so we can use req.body to update the product
     // console.log(req.body);
     res.redirect(`/products/${product._id}`);
-  } catch (e) {
-    next(e);
-  }
-});
+  })
+);
 
 //*Product Delete
-app.delete("/products/:id", async (req, res) => {
-  const { id } = req.params;
-  const deletedProduct = await Product.findByIdAndDelete(id);
-  res.redirect("/products");
-});
+app.delete(
+  "/products/:id",
+  wrapAsync(async (req, res) => {
+    const { id } = req.params;
+    const deletedProduct = await Product.findByIdAndDelete(id);
+    res.redirect("/products");
+  })
+);
 
+app.use((err, req, res, next) => {
+  if (err.name === "ValidationError") {
+    err.message = "Validation Failed enter all fields correctly";
+    err.status = 400;
+  }
+  next(err);
+  // we need to pass err to the next error handling middleware
+});
 app.use((err, req, res, next) => {
   const { status = 500, message = "something went wrong" } = err;
   res.status(status).send(message);
