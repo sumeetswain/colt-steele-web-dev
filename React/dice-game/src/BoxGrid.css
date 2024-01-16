@@ -1,0 +1,5 @@
+.BoxGrid {
+  display: flex;
+  width: 800px;
+  flex-wrap: wrap;
+}
